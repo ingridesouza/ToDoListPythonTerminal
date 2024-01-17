@@ -12,13 +12,13 @@ def adicionar_tarefa(lista_tarefas, tarefas):
 
 #-----------------------------------------------------------------------
     
-def remover_tarefa(lista_tarefas,nome_tarefa):
+def remover_tarefa(lista_tarefas, nome_excluir):
     for tarefa in lista_tarefas:
-     if tarefa["Nome_tarefa"] == nome_tarefa:
-        tarefa.remove(tarefa)
-        print(f"Tarefa '{nome_tarefa}' removida com sucesso.")
+     if tarefa["Nome_tarefa"] == nome_excluir:
+        tarefa.remove(nome_excluir)
+        print(f"Tarefa '{nome_excluir}' removida com sucesso.")
         return
-    print(f"Tarefa '{nome_tarefa}' não encontrada na lista.")
+    print(f"Tarefa '{nome_excluir}' não encontrada na lista.")
 
 #-----------------------------------------------------------------------
 # Função para listar tarefas
@@ -39,7 +39,8 @@ def marcar_como_concluida(lista_tarefas, nome_tarefa):
             # Marca a tarefa como concluída, alterando o valor da chave "Status_Tarefa" para True
             tarefa["Status_Tarefa"] = True
             # Imprime uma mensagem indicando que a tarefa foi marcada como concluída
-            print(f"Tarefa '{nome_tarefa}' marcada como concluída!")
+            # print(f"Tarefa '{nome_tarefa}' marcada como concluída!")
+            print(f"\x1b[9m Tarefa '{nome_tarefa}' marcada como concluída! \x1b[0m")
             # Retorna imediatamente após marcar a tarefa como concluída
             return
     # Se o loop não encontrar a tarefa, imprime uma mensagem indicando que a tarefa não foi encontrada
