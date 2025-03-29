@@ -279,35 +279,41 @@
 
     // 2. CRIAR UMA NOVA TAREFA
     document.getElementById('formCriarTarefa').addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const nome = document.getElementById('nomeTarefa').value;
-      const descricao = document.getElementById('descricaoTarefa').value;
-      const prioridade = document.getElementById('prioridadeTarefa').value;
-      const categoria = document.getElementById('categoriaTarefa').value;
-
-      fetch(`${BASE_URL}/tarefas`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ 
-          nome, 
-          descricao, 
-          prioridade, 
-          categoria 
+        e.preventDefault();
+      
+        const nome = document.getElementById('nomeTarefa').value;
+        const descricao = document.getElementById('descricaoTarefa').value;
+        const prioridade = document.getElementById('prioridadeTarefa').value;
+        const categoria = document.getElementById('categoriaTarefa').value;
+      
+        console.log('Enviando dados para /tarefas:', { nome, descricao, prioridade, categoria });
+      
+        fetch(`${BASE_URL}/tarefas`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ 
+            nome, 
+            descricao, 
+            prioridade, 
+            categoria 
+          })
         })
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('resCriarTarefa').textContent = data.mensagem || data.erro || JSON.stringify(data);
-        // Limpa campos
-        this.reset();
-      })
-      .catch(err => {
-        document.getElementById('resCriarTarefa').textContent = 'Erro ao criar tarefa.';
-        console.error(err);
+        .then(res => {
+          console.log('Resposta HTTP:', res.status, res.statusText);
+          return res.json();  // parse do JSON
+        })
+        .then(data => {
+          console.log('Corpo da resposta:', data);
+          document.getElementById('resCriarTarefa').textContent = data.mensagem || data.erro || JSON.stringify(data);
+          // Limpa campos
+          this.reset();
+        })
+        .catch(err => {
+          console.error('Erro no fetch:', err);
+          document.getElementById('resCriarTarefa').textContent = 'Erro ao criar tarefa.';
+        });
       });
-    });
-
+      
     // 3. REMOVER TAREFA
     document.getElementById('formRemoverTarefa').addEventListener('submit', function (e) {
       e.preventDefault();
