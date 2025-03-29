@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>ToDoList - Exemplo de Front-end</title>
+  <style>
+    /* ==============================
+       RESET BÁSICO DE MARGENS/PADDING
+       ============================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ==============================
+       ESTILOS GERAIS
+       ============================== */
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f7fafc;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    header {
+      background-color: #2b6cb0;
+      color: #fff;
+      text-align: center;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    header h1 {
+      font-size: 1.8rem;
+    }
+
+    main {
+      width: 90%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    section + section {
+      margin-top: 2rem;
+    }
+
+    h2 {
+      margin-bottom: 0.75rem;
+      color: #2b6cb0;
+    }
+
+    /* ==============================
+       FORMULÁRIOS
+       ============================== */
+    form {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 3px rgba(0,0,0,0.06);
+    }
+
+    form label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    form input[type="text"],
+    form select {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    button {
+      background-color: #2b6cb0;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+    }
+    button:hover {
+      background-color: #3182ce;
+    }
+
+    /* ==============================
+       BOTÕES ISOLADOS (ex: "Listar Tarefas")
+       ============================== */
+    .btn-primary {
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    /* ==============================
+       DIV DE RESULTADOS
+       ============================== */
+    .resultado {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 1rem;
+      box-shadow: 0 2px 3px rgba(0,0,0,0.06);
+      margin-bottom: 1rem;
+    }
+
+    /* ==============================
+       EXIBIÇÃO DAS TAREFAS
+       ============================== */
+    .tarefa {
+      border-left: 4px solid #2b6cb0;
+      padding-left: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .tarefa strong {
+      color: #2b6cb0;
+    }
+
+    hr {
+      border: none;
+      border-bottom: 1px solid #eee;
+      margin: 2rem 0;
+    }
+
+    /* ==============================
+       RESPONSIVIDADE BÁSICA
+       ============================== */
+    @media (max-width: 600px) {
+      form {
+        padding: 0.75rem;
+      }
+      header h1 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>ToDoList - Exemplo de Integração com Flask</h1>
+  </header>
+
+  <main>
+    <!-- Form para listar todas as tarefas -->
+    <section>
+      <button id="btnListarTarefas" class="btn-primary">Listar Todas as Tarefas</button>
+      <div id="listaTarefas" class="resultado"></div>
+    </section>
+
+    <hr />
+
+    <!-- Form para criar uma nova tarefa -->
+    <section>
+      <h2>Criar Tarefa</h2>
+      <form id="formCriarTarefa">
+        <label for="nomeTarefa">Nome da Tarefa:</label>
+        <input type="text" id="nomeTarefa" name="nome" required />
+
+        <label for="descricaoTarefa">Descrição:</label>
+        <input type="text" id="descricaoTarefa" name="descricao" required />
+
+        <label for="prioridadeTarefa">Prioridade:</label>
+        <select id="prioridadeTarefa" name="prioridade">
+          <option value="Alta">Alta</option>
+          <option value="Média">Média</option>
+          <option value="Baixa">Baixa</option>
+        </select>
+
+        <label for="categoriaTarefa">Categoria:</label>
+        <input type="text" id="categoriaTarefa" name="categoria" required />
+
+        <button type="submit">Criar Tarefa</button>
+      </form>
+      <div id="resCriarTarefa" class="resultado"></div>
+    </section>
+
+    <hr />
+
+    <!-- Form para remover uma tarefa -->
+    <section>
+      <h2>Remover Tarefa</h2>
+      <form id="formRemoverTarefa">
+        <label for="nomeRemover">Nome da Tarefa a Remover:</label>
+        <input type="text" id="nomeRemover" name="nomeRemover" required />
+        <button type="submit">Remover</button>
+      </form>
+      <div id="resRemoverTarefa" class="resultado"></div>
+    </section>
+
+    <hr />
+
+    <!-- Form para marcar uma tarefa como concluída -->
+    <section>
+      <h2>Marcar Tarefa como Concluída</h2>
+      <form id="formConcluirTarefa">
+        <label for="nomeConcluir">Nome da Tarefa a Concluir:</label>
+        <input type="text" id="nomeConcluir" name="nomeConcluir" required />
+        <button type="submit">Concluir</button>
+      </form>
+      <div id="resConcluirTarefa" class="resultado"></div>
+    </section>
+
+    <hr />
+
+    <!-- Form para filtrar por prioridade -->
+    <section>
+      <h2>Filtrar Tarefas por Prioridade</h2>
+      <form id="formFiltrarPrioridade">
+        <label for="prioridadeFiltro">Prioridade:</label>
+        <select id="prioridadeFiltro" name="prioridadeFiltro">
+          <option value="Alta">Alta</option>
+          <option value="Média">Média</option>
+          <option value="Baixa">Baixa</option>
+        </select>
+        <button type="submit">Filtrar</button>
+      </form>
+      <div id="resFiltrarPrioridade" class="resultado"></div>
+    </section>
+
+    <hr />
+
+    <!-- Form para filtrar por categoria -->
+    <section>
+      <h2>Filtrar Tarefas por Categoria</h2>
+      <form id="formFiltrarCategoria">
+        <label for="categoriaFiltro">Categoria:</label>
+        <input type="text" id="categoriaFiltro" name="categoriaFiltro" required />
+        <button type="submit">Filtrar</button>
+      </form>
+      <div id="resFiltrarCategoria" class="resultado"></div>
+    </section>
+  </main>
+
+  <script>
+    const BASE_URL = 'http://127.0.0.1:5000'; // Ajuste se sua API estiver em outro endereço/porta
+
+    // Função auxiliar para exibir tarefas
+    function exibirTarefas(tarefas, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      if (!tarefas || tarefas.length === 0) {
+        container.textContent = 'Nenhuma tarefa encontrada.';
+        return;
+      }
+      tarefas.forEach(t => {
+        const divTarefa = document.createElement('div');
+        divTarefa.classList.add('tarefa');
+        divTarefa.innerHTML = `
+          <strong>Nome:</strong> ${t.nome_tarefa} <br/>
+          <strong>Descrição:</strong> ${t.descricao} <br/>
+          <strong>Prioridade:</strong> ${t.prioridade} <br/>
+          <strong>Categoria:</strong> ${t.categoria} <br/>
+          <strong>Concluída:</strong> ${t.status_tarefa ? 'Sim' : 'Não'}
+        `;
+        container.appendChild(divTarefa);
+      });
+    }
+
+    // 1. LISTAR TODAS AS TAREFAS
+    document.getElementById('btnListarTarefas').addEventListener('click', () => {
+      fetch(`${BASE_URL}/tarefas`)
+        .then(res => res.json())
+        .then(data => exibirTarefas(data, 'listaTarefas'))
+        .catch(err => {
+          document.getElementById('listaTarefas').textContent = 'Erro ao listar tarefas.';
+          console.error(err);
+        });
+    });
+
+    // 2. CRIAR UMA NOVA TAREFA
+    document.getElementById('formCriarTarefa').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const nome = document.getElementById('nomeTarefa').value;
+      const descricao = document.getElementById('descricaoTarefa').value;
+      const prioridade = document.getElementById('prioridadeTarefa').value;
+      const categoria = document.getElementById('categoriaTarefa').value;
+
+      fetch(`${BASE_URL}/tarefas`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ 
+          nome, 
+          descricao, 
+          prioridade, 
+          categoria 
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('resCriarTarefa').textContent = data.mensagem || data.erro || JSON.stringify(data);
+        // Limpa campos
+        this.reset();
+      })
+      .catch(err => {
+        document.getElementById('resCriarTarefa').textContent = 'Erro ao criar tarefa.';
+        console.error(err);
+      });
+    });
+
+    // 3. REMOVER TAREFA
+    document.getElementById('formRemoverTarefa').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const nomeRemover = document.getElementById('nomeRemover').value;
+      fetch(`${BASE_URL}/tarefas/${encodeURIComponent(nomeRemover)}`, {
+        method: 'DELETE'
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('resRemoverTarefa').textContent = data.mensagem || data.erro || JSON.stringify(data);
+        this.reset();
+      })
+      .catch(err => {
+        document.getElementById('resRemoverTarefa').textContent = 'Erro ao remover tarefa.';
+        console.error(err);
+      });
+    });
+
+    // 4. MARCAR CONCLUÍDA
+    document.getElementById('formConcluirTarefa').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const nomeConcluir = document.getElementById('nomeConcluir').value;
+      fetch(`${BASE_URL}/tarefas/${encodeURIComponent(nomeConcluir)}/concluir`, {
+        method: 'PUT'
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('resConcluirTarefa').textContent = data.mensagem || data.erro || JSON.stringify(data);
+        this.reset();
+      })
+      .catch(err => {
+        document.getElementById('resConcluirTarefa').textContent = 'Erro ao concluir tarefa.';
+        console.error(err);
+      });
+    });
+
+    // 5. FILTRAR POR PRIORIDADE
+    document.getElementById('formFiltrarPrioridade').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const prioridadeFiltro = document.getElementById('prioridadeFiltro').value;
+      fetch(`${BASE_URL}/tarefas/prioridade/${encodeURIComponent(prioridadeFiltro)}`)
+        .then(res => res.json())
+        .then(data => exibirTarefas(data, 'resFiltrarPrioridade'))
+        .catch(err => {
+          document.getElementById('resFiltrarPrioridade').textContent = 'Erro ao filtrar tarefas por prioridade.';
+          console.error(err);
+        });
+    });
+
+    // 6. FILTRAR POR CATEGORIA
+    document.getElementById('formFiltrarCategoria').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const categoriaFiltro = document.getElementById('categoriaFiltro').value;
+      fetch(`${BASE_URL}/tarefas/categoria/${encodeURIComponent(categoriaFiltro)}`)
+        .then(res => res.json())
+        .then(data => exibirTarefas(data, 'resFiltrarCategoria'))
+        .catch(err => {
+          document.getElementById('resFiltrarCategoria').textContent = 'Erro ao filtrar tarefas por categoria.';
+          console.error(err);
+        });
+    });
+  </script>
+</body>
+</html>

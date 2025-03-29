@@ -5,10 +5,10 @@ app = Flask(__name__)
 
 # Configurações de conexão com o banco de dados MySQL
 db_config = {
-    'host': 'localhost',
+    'host': '127.0.0.1',
     'user': 'root',
     'password': 'Incrivel10?',
-    'database': 'toDoList'
+    'database': 'todolist'
 }
 
 # ---------------------------------------------------------------------
@@ -121,25 +121,34 @@ def rota_listar_tarefas():
 
 @app.route('/tarefas', methods=['POST'])
 def rota_adicionar_tarefa():
-    dados = request.json
-    # Exemplo de dados esperados:
-    # {
-    #   "nome": "Estudar Flask",
-    #   "descricao": "Fazer mini-API",
-    #   "prioridade": "Alta",
-    #   "categoria": "Estudos"
-    # }
-    if not all(chave in dados for chave in ["nome", "descricao", "prioridade", "categoria"]):
-        return jsonify({"erro": "Dados incompletos para criar a tarefa"}), 400
+    try:
+        # Logando a chegada da requisição
+        app.logger.info("Recebido POST em /tarefas.")
 
-    # Cria a tarefa no banco
-    create_task(
-        nome=dados["nome"],
-        descricao=dados["descricao"],
-        prioridade=dados["prioridade"],
-        categoria=dados["categoria"]
-    )
-    return jsonify({"mensagem": "Tarefa adicionada com sucesso!"}), 201
+        dados = request.json
+        app.logger.info("JSON recebido: %s", dados)
+
+        # Verifica se veio tudo que precisa
+        if not all(chave in dados for chave in ["nome", "descricao", "prioridade", "categoria"]):
+            app.logger.warning("Dados incompletos: %s", dados)
+            return jsonify({"erro": "Dados incompletos para criar a tarefa"}), 400
+
+        # Insere no banco
+        create_task(
+            nome=dados["nome"],
+            descricao=dados["descricao"],
+            prioridade=dados["prioridade"],
+            categoria=dados["categoria"]
+        )
+        app.logger.info("Tarefa criada com sucesso: %s", dados["nome"])
+
+        return jsonify({"mensagem": "Tarefa adicionada com sucesso!"}), 201
+
+    except Exception as e:
+        # Loga erro completo no console
+        app.logger.error("Erro ao criar tarefa: %s", e, exc_info=True)
+        return jsonify({"erro": str(e)}), 500
+
 
 @app.route('/tarefas/<string:nome_tarefa>', methods=['DELETE'])
 def rota_remover_tarefa(nome_tarefa):
