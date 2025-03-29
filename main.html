@@ -416,6 +416,43 @@
     .fade-in {
       animation: fadeIn 0.3s ease-out forwards;
     }
+
+    /* ==============================
+   SELECTS DE TAREFAS
+   ============================== */
+.select-tarefas {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    background-color: white;
+  }
+  
+  .busca-tarefa {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Melhoria para selects longos */
+  .select-tarefas option {
+    padding: 0.5rem;
+    white-space: normal;
+  }
+  
+  /* ==============================
+     CARDS DE GERENCIAMENTO
+     ============================== */
+  .card h3 {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
   </style>
 </head>
 <body>
@@ -478,94 +515,130 @@
     </div>
 
     <div id="criar" class="tab-content">
-      <section>
-        <div class="section-header">
-          <h2><i class="fas fa-plus-circle"></i> Nova Tarefa</h2>
-        </div>
-        <div class="card">
-          <form id="formCriarTarefa">
+        <section>
+          <div class="section-header">
+            <h2><i class="fas fa-plus-circle"></i> Nova Tarefa</h2>
+          </div>
+          
+          <!-- Novo Card para Gerenciar Categorias -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <h3 style="margin-bottom: 1rem; color: var(--primary-color);">
+              <i class="fas fa-tags"></i> Gerenciar Categorias
+            </h3>
             <div class="form-grid">
               <div class="form-group">
-                <label for="nomeTarefa"><i class="fas fa-heading"></i> Nome da Tarefa:</label>
-                <input type="text" id="nomeTarefa" name="nome" required placeholder="Ex: Reunião com cliente" />
+                <label for="novaCategoria"><i class="fas fa-plus"></i> Nova Categoria:</label>
+                <input type="text" id="novaCategoria" placeholder="Ex: Estudos" />
               </div>
+              <div class="form-group" style="align-self: flex-end;">
+                <button id="btnAddCategoria" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Adicionar
+                </button>
+              </div>
+            </div>
+            <div id="listaCategorias" style="margin-top: 1rem;">
+              <!-- Categorias serão carregadas aqui -->
+            </div>
+          </div>
+    
+          <!-- Formulário de Criação de Tarefas (Agora com select) -->
+          <div class="card">
+            <form id="formCriarTarefa">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="nomeTarefa"><i class="fas fa-heading"></i> Nome:</label>
+                  <input type="text" id="nomeTarefa" required placeholder="Ex: Reunião"/>
+                </div>
+                <div class="form-group">
+                  <label for="prioridadeTarefa"><i class="fas fa-exclamation-circle"></i> Prioridade:</label>
+                  <select id="prioridadeTarefa">
+                    <option value="Alta">Alta</option>
+                    <option value="Média" selected>Média</option>
+                    <option value="Baixa">Baixa</option>
+                  </select>
+                </div>
+              </div>
+              
               <div class="form-group">
-                <label for="prioridadeTarefa"><i class="fas fa-exclamation-circle"></i> Prioridade:</label>
-                <select id="prioridadeTarefa" name="prioridade">
-                  <option value="Alta">Alta</option>
-                  <option value="Média" selected>Média</option>
-                  <option value="Baixa">Baixa</option>
+                <label for="descricaoTarefa"><i class="fas fa-align-left"></i> Descrição:</label>
+                <input type="text" id="descricaoTarefa" required placeholder="Detalhes da tarefa"/>
+              </div>
+              
+              <div class="form-group">
+                <label for="categoriaTarefa"><i class="fas fa-tag"></i> Categoria:</label>
+                <select id="categoriaTarefa" required>
+                  <option value="">Selecione uma categoria</option>
+                  <!-- Categorias serão carregadas via JS -->
                 </select>
               </div>
-            </div>
-            
-            <div class="form-group">
-              <label for="descricaoTarefa"><i class="fas fa-align-left"></i> Descrição:</label>
-              <input type="text" id="descricaoTarefa" name="descricao" required placeholder="Ex: Discutir requisitos do projeto" />
-            </div>
-            
-            <div class="form-group">
-              <label for="categoriaTarefa"><i class="fas fa-tag"></i> Categoria:</label>
-              <input type="text" id="categoriaTarefa" name="categoria" required placeholder="Ex: Trabalho" />
-            </div>
-            
-            <div style="text-align: right; margin-top: 1rem;">
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Criar Tarefa
-              </button>
-            </div>
-          </form>
-        </div>
-        <div id="resCriarTarefa" class="resultado" style="display: none;"></div>
-      </section>
-    </div>
+              
+              <div style="text-align: right; margin-top: 1rem;">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Criar Tarefa
+                </button>
+              </div>
+            </form>
+          </div>
+          <div id="resCriarTarefa" class="resultado" style="display: none;"></div>
+        </section>
+      </div>
+    
 
-    <div id="gerenciar" class="tab-content">
-      <section>
-        <div class="section-header">
-          <h2><i class="fas fa-edit"></i> Gerenciar Tarefas</h2>
-        </div>
-        
-        <div class="card">
-          <h3 style="margin-bottom: 1rem; color: var(--primary-color);"><i class="fas fa-check-circle"></i> Concluir Tarefa</h3>
-          <form id="formConcluirTarefa" class="form-grid">
-            <div class="form-group">
-              <label for="nomeConcluir"><i class="fas fa-tasks"></i> Nome da Tarefa:</label>
-              <input type="text" id="nomeConcluir" name="nomeConcluir" required placeholder="Digite o nome da tarefa" />
+      <div id="gerenciar" class="tab-content">
+        <section>
+          <div class="section-header">
+            <h2><i class="fas fa-edit"></i> Gerenciar Tarefas</h2>
+          </div>
+          
+          <!-- Seletor de Tarefas para Concluir -->
+          <div class="card">
+            <h3 style="margin-bottom: 1rem; color: var(--primary-color);">
+              <i class="fas fa-check-circle"></i> Concluir Tarefa
+            </h3>
+            <div id="selectConcluirTarefa" class="form-group">
+              <!-- As opções serão carregadas via JavaScript -->
             </div>
-            <div class="form-group" style="align-self: flex-end;">
-              <button type="submit" class="btn btn-success">
-                <i class="fas fa-check"></i> Marcar como Concluída
-              </button>
+            <form id="formConcluirTarefa">
+              <div style="text-align: right;">
+                <button type="submit" class="btn btn-success">
+                  <i class="fas fa-check"></i> Marcar como Concluída
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Seletor de Tarefas para Remover -->
+          <div class="card" style="margin-top: 1.5rem;">
+            <h3 style="margin-bottom: 1rem; color: var(--primary-color);">
+              <i class="fas fa-trash-alt"></i> Remover Tarefa
+            </h3>
+            <div id="selectRemoverTarefa" class="form-group">
+              <!-- As opções serão carregadas via JavaScript -->
             </div>
-          </form>
-        </div>
-        
-        <div class="card">
-          <h3 style="margin-bottom: 1rem; color: var(--primary-color);"><i class="fas fa-trash-alt"></i> Remover Tarefa</h3>
-          <form id="formRemoverTarefa" class="form-grid">
-            <div class="form-group">
-              <label for="nomeRemover"><i class="fas fa-tasks"></i> Nome da Tarefa:</label>
-              <input type="text" id="nomeRemover" name="nomeRemover" required placeholder="Digite o nome da tarefa" />
-            </div>
-            <div class="form-group" style="align-self: flex-end;">
-              <button type="submit" class="btn btn-danger">
-                <i class="fas fa-trash"></i> Remover Tarefa
-              </button>
-            </div>
-          </form>
-        </div>
-        
-        <div id="resGerenciarTarefas" class="resultado" style="display: none;"></div>
-      </section>
-    </div>
+            <form id="formRemoverTarefa">
+              <div style="text-align: right;">
+                <button type="submit" class="btn btn-danger">
+                  <i class="fas fa-trash"></i> Remover Tarefa
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <div id="resGerenciarTarefas" class="resultado" style="display: none;"></div>
+        </section>
+      </div>
   </main>
 
   <script>
     const BASE_URL = 'http://127.0.0.1:5000'; // Ajuste se sua API estiver em outro endereço/porta
+    const TAREFAS_POR_PAGINA = 5; // Número de tarefas por página na seleção
+
+    // Gerenciamento de Categorias
+    let categorias = JSON.parse(localStorage.getItem('categorias')) || ['Trabalho', 'Pessoal', 'Estudos'];
+    let todasTarefas = []; // Armazenará todas as tarefas para seleção
 
     // Função auxiliar para exibir tarefas
-    function exibirTarefas(tarefas, containerId) {
+    function exibirTarefas(tarefas, containerId, opcoes = {}) {
       const container = document.getElementById(containerId);
       container.innerHTML = '';
       
@@ -578,6 +651,57 @@
         return;
       }
       
+      // Se for para exibir como lista de seleção
+      if (opcoes.modoSelecao) {
+        const select = document.createElement('select');
+        select.id = opcoes.selectId;
+        select.className = 'select-tarefas';
+        select.style.width = '100%';
+        select.style.padding = '0.75rem';
+        select.style.borderRadius = '6px';
+        select.style.border = '1px solid var(--border-color)';
+        select.style.marginBottom = '1rem';
+        
+        // Adiciona opção padrão
+        const optionPadrao = document.createElement('option');
+        optionPadrao.value = '';
+        optionPadrao.textContent = opcoes.placeholder || 'Selecione uma tarefa';
+        select.appendChild(optionPadrao);
+        
+        // Adiciona as tarefas
+        tarefas.forEach(t => {
+          const option = document.createElement('option');
+          option.value = t.nome_tarefa;
+          option.textContent = `${t.nome_tarefa} (${t.prioridade}) - ${t.status_tarefa ? 'Concluída' : 'Pendente'}`;
+          select.appendChild(option);
+        });
+        
+        container.appendChild(select);
+        
+        // Adiciona busca se houver muitas tarefas
+        if (tarefas.length > TAREFAS_POR_PAGINA && opcoes.comBusca) {
+          const buscaContainer = document.createElement('div');
+          buscaContainer.style.marginBottom = '1rem';
+          buscaContainer.innerHTML = `
+            <input type="text" id="busca-${opcoes.selectId}" class="busca-tarefa" 
+                   placeholder="Buscar tarefa..." style="width: 100%; padding: 0.5rem;">
+          `;
+          container.insertBefore(buscaContainer, select);
+          
+          // Implementa a busca
+          document.getElementById(`busca-${opcoes.selectId}`).addEventListener('input', (e) => {
+            const termo = e.target.value.toLowerCase();
+            Array.from(select.options).forEach(option => {
+              const deveMostrar = option.value === '' || option.textContent.toLowerCase().includes(termo);
+              option.style.display = deveMostrar ? 'block' : 'none';
+            });
+          });
+        }
+        
+        return;
+      }
+      
+      // Exibição normal em cards
       const tarefaList = document.createElement('div');
       tarefaList.classList.add('tarefa-list');
       
@@ -621,6 +745,99 @@
         </div>
       `;
       container.style.display = 'block';
+      
+      // Remove o alerta após 5 segundos
+      if (type === 'success') {
+        setTimeout(() => {
+          container.style.display = 'none';
+        }, 5000);
+      }
+    }
+
+    // Atualizar lista de categorias nos selects e na visualização
+    function atualizarCategorias() {
+      // Atualiza o select no formulário de tarefas
+      const selectTarefa = document.getElementById('categoriaTarefa');
+      selectTarefa.innerHTML = '<option value="">Selecione uma categoria</option>';
+      
+      // Atualiza o select no formulário de filtro
+      const selectFiltro = document.getElementById('categoriaFiltro');
+      selectFiltro.innerHTML = '<option value="">Todas categorias</option>';
+      
+      // Atualiza a lista visual de categorias
+      const listaCategorias = document.getElementById('listaCategorias');
+      listaCategorias.innerHTML = '';
+      
+      if (categorias.length === 0) {
+        listaCategorias.innerHTML = '<p class="alert"><i class="fas fa-info-circle"></i> Nenhuma categoria cadastrada.</p>';
+      } else {
+        const ul = document.createElement('ul');
+        ul.style.listStyle = 'none';
+        ul.style.padding = '0';
+        
+        categorias.forEach((cat, index) => {
+          // Adiciona ao select de tarefas
+          const optionTarefa = document.createElement('option');
+          optionTarefa.value = cat;
+          optionTarefa.textContent = cat;
+          selectTarefa.appendChild(optionTarefa);
+          
+          // Adiciona ao select de filtro
+          const optionFiltro = document.createElement('option');
+          optionFiltro.value = cat;
+          optionFiltro.textContent = cat;
+          selectFiltro.appendChild(optionFiltro);
+          
+          // Adiciona à lista visual
+          const li = document.createElement('li');
+          li.style.display = 'flex';
+          li.style.justifyContent = 'space-between';
+          li.style.alignItems = 'center';
+          li.style.padding = '0.5rem';
+          li.style.borderBottom = '1px solid var(--border-color)';
+          
+          li.innerHTML = `
+            <span>${cat}</span>
+            <button class="btn btn-icon btn-danger remover-categoria" data-index="${index}">
+              <i class="fas fa-trash"></i>
+            </button>
+          `;
+          ul.appendChild(li);
+        });
+        
+        listaCategorias.appendChild(ul);
+      }
+      
+      localStorage.setItem('categorias', JSON.stringify(categorias));
+    }
+
+    // Carrega todas as tarefas para seleção
+    async function carregarTarefasParaSelecao() {
+      try {
+        const response = await fetch(`${BASE_URL}/tarefas`);
+        todasTarefas = await response.json();
+        
+        // Atualiza os selects de tarefas
+        if (document.getElementById('selectConcluirTarefa')) {
+          exibirTarefas(todasTarefas, 'selectConcluirTarefa', {
+            modoSelecao: true,
+            selectId: 'nomeConcluir',
+            placeholder: 'Selecione a tarefa para concluir',
+            comBusca: todasTarefas.length > TAREFAS_POR_PAGINA
+          });
+        }
+        
+        if (document.getElementById('selectRemoverTarefa')) {
+          exibirTarefas(todasTarefas, 'selectRemoverTarefa', {
+            modoSelecao: true,
+            selectId: 'nomeRemover',
+            placeholder: 'Selecione a tarefa para remover',
+            comBusca: todasTarefas.length > TAREFAS_POR_PAGINA
+          });
+        }
+      } catch (err) {
+        console.error('Erro ao carregar tarefas para seleção:', err);
+      }
     }
 
     // Navegação por abas
@@ -634,6 +851,11 @@
         tab.classList.add('active');
         const tabId = tab.getAttribute('data-tab');
         document.getElementById(tabId).classList.add('active');
+        
+        // Se for a aba de gerenciamento, carrega as tarefas para seleção
+        if (tabId === 'gerenciar') {
+          carregarTarefasParaSelecao();
+        }
       });
     });
 
@@ -645,7 +867,10 @@
       
       fetch(`${BASE_URL}/tarefas`)
         .then(res => res.json())
-        .then(data => exibirTarefas(data, 'listaTarefas'))
+        .then(data => {
+          exibirTarefas(data, 'listaTarefas');
+          todasTarefas = data; // Atualiza a lista global
+        })
         .catch(err => {
           container.innerHTML = `
             <div class="alert alert-error">
@@ -656,7 +881,40 @@
         });
     });
 
-    // 2. CRIAR UMA NOVA TAREFA
+    // 2. ADICIONAR NOVA CATEGORIA
+    document.getElementById('btnAddCategoria').addEventListener('click', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('novaCategoria');
+      const categoria = input.value.trim();
+      
+      if (!categoria) {
+        showAlert('Digite um nome para a categoria', 'error', 'listaCategorias');
+        return;
+      }
+      
+      if (categorias.includes(categoria)) {
+        showAlert('Esta categoria já existe', 'error', 'listaCategorias');
+        return;
+      }
+      
+      categorias.push(categoria);
+      input.value = '';
+      atualizarCategorias();
+      showAlert(`Categoria "${categoria}" adicionada!`, 'success', 'listaCategorias');
+    });
+
+    // 3. REMOVER CATEGORIA
+    document.getElementById('listaCategorias').addEventListener('click', (e) => {
+      if (e.target.closest('.remover-categoria')) {
+        const index = e.target.closest('.remover-categoria').getAttribute('data-index');
+        const categoriaRemovida = categorias[index];
+        categorias.splice(index, 1);
+        atualizarCategorias();
+        showAlert(`Categoria "${categoriaRemovida}" removida!`, 'success', 'listaCategorias');
+      }
+    });
+
+    // 4. CRIAR UMA NOVA TAREFA
     document.getElementById('formCriarTarefa').addEventListener('submit', function (e) {
       e.preventDefault();
       
@@ -664,6 +922,11 @@
       const descricao = document.getElementById('descricaoTarefa').value;
       const prioridade = document.getElementById('prioridadeTarefa').value;
       const categoria = document.getElementById('categoriaTarefa').value;
+      
+      if (!categoria) {
+        showAlert('Selecione uma categoria', 'error', 'resCriarTarefa');
+        return;
+      }
       
       const container = document.getElementById('resCriarTarefa');
       container.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> Criando tarefa...</p>';
@@ -686,9 +949,17 @@
         } else {
           showAlert(data.mensagem || 'Tarefa criada com sucesso!', 'success', 'resCriarTarefa');
           this.reset();
-          // Atualiza a lista de tarefas se estiver na aba de listagem
+          // Atualiza a lista de tarefas
+          todasTarefas.push({ nome_tarefa: nome, descricao, prioridade, categoria, status_tarefa: false });
+          
+          // Se estiver na aba de listagem, atualiza
           if (document.getElementById('listar').classList.contains('active')) {
             document.getElementById('btnListarTarefas').click();
+          }
+          
+          // Se estiver na aba de gerenciamento, atualiza os selects
+          if (document.getElementById('gerenciar').classList.contains('active')) {
+            carregarTarefasParaSelecao();
           }
         }
       })
@@ -698,10 +969,15 @@
       });
     });
       
-    // 3. REMOVER TAREFA
+    // 5. REMOVER TAREFA (AGORA COM SELECT)
     document.getElementById('formRemoverTarefa').addEventListener('submit', function (e) {
       e.preventDefault();
       const nomeRemover = document.getElementById('nomeRemover').value;
+      
+      if (!nomeRemover) {
+        showAlert('Selecione uma tarefa para remover', 'error', 'resGerenciarTarefas');
+        return;
+      }
       
       const container = document.getElementById('resGerenciarTarefas');
       container.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> Removendo tarefa...</p>';
@@ -716,9 +992,17 @@
           showAlert(data.erro, 'error', 'resGerenciarTarefas');
         } else {
           showAlert(data.mensagem || 'Tarefa removida com sucesso!', 'success', 'resGerenciarTarefas');
-          this.reset();
-          // Atualiza a lista de tarefas
-          document.getElementById('btnListarTarefas').click();
+          
+          // Atualiza a lista global
+          todasTarefas = todasTarefas.filter(t => t.nome_tarefa !== nomeRemover);
+          
+          // Atualiza os selects
+          carregarTarefasParaSelecao();
+          
+          // Atualiza a lista se estiver visível
+          if (document.getElementById('listar').classList.contains('active')) {
+            document.getElementById('btnListarTarefas').click();
+          }
         }
       })
       .catch(err => {
@@ -727,10 +1011,15 @@
       });
     });
 
-    // 4. MARCAR CONCLUÍDA
+    // 6. MARCAR CONCLUÍDA (AGORA COM SELECT)
     document.getElementById('formConcluirTarefa').addEventListener('submit', function (e) {
       e.preventDefault();
       const nomeConcluir = document.getElementById('nomeConcluir').value;
+      
+      if (!nomeConcluir) {
+        showAlert('Selecione uma tarefa para concluir', 'error', 'resGerenciarTarefas');
+        return;
+      }
       
       const container = document.getElementById('resGerenciarTarefas');
       container.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> Atualizando tarefa...</p>';
@@ -745,9 +1034,20 @@
           showAlert(data.erro, 'error', 'resGerenciarTarefas');
         } else {
           showAlert(data.mensagem || 'Tarefa marcada como concluída!', 'success', 'resGerenciarTarefas');
-          this.reset();
-          // Atualiza a lista de tarefas
-          document.getElementById('btnListarTarefas').click();
+          
+          // Atualiza a lista global
+          const tarefa = todasTarefas.find(t => t.nome_tarefa === nomeConcluir);
+          if (tarefa) {
+            tarefa.status_tarefa = true;
+          }
+          
+          // Atualiza os selects
+          carregarTarefasParaSelecao();
+          
+          // Atualiza a lista se estiver visível
+          if (document.getElementById('listar').classList.contains('active')) {
+            document.getElementById('btnListarTarefas').click();
+          }
         }
       })
       .catch(err => {
@@ -756,7 +1056,7 @@
       });
     });
 
-    // 5. FILTRAR TAREFAS
+    // 7. FILTRAR TAREFAS
     document.getElementById('formFiltrarPrioridade').addEventListener('submit', function (e) {
       e.preventDefault();
       const prioridadeFiltro = document.getElementById('prioridadeFiltro').value;
@@ -788,6 +1088,12 @@
           console.error(err);
         });
     });
-  </script>
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      atualizarCategorias();
+      carregarTarefasParaSelecao();
+    });
+</script>
 </body>
 </html>
