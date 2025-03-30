@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToDoList - Gerenciador de Tarefas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+
+  <header>
+    <div class="container header-content">
+      <h1><i class="fas fa-tasks"></i> ToDoList - Gerenciador de Tarefas</h1>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Navegação por abas -->
+    <div class="nav-tabs">
+      <div class="nav-tab active" data-tab="listar"><i class="fas fa-list"></i> Listar Tarefas</div>
+      <div class="nav-tab" data-tab="criar"><i class="fas fa-plus-circle"></i> Criar Tarefa</div>
+      <div class="nav-tab" data-tab="gerenciar"><i class="fas fa-cog"></i> Gerenciar Tarefas</div>
+    </div>
+
+    <!-- Conteúdo das abas -->
+    <div id="listar" class="tab-content active">
+      <section>
+        <div class="section-header">
+          <h2><i class="fas fa-list-ul"></i> Todas as Tarefas</h2>
+          <button id="btnListarTarefas" class="btn btn-primary">
+            <i class="fas fa-sync-alt"></i> Atualizar Lista
+          </button>
+        </div>
+        <div id="listaTarefas" class="resultado">
+          <p class="alert"><i class="fas fa-info-circle"></i> Clique no botão acima para carregar as tarefas.</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-header">
+          <h2><i class="fas fa-filter"></i> Filtrar Tarefas</h2>
+        </div>
+        <div class="card">
+          <form id="formFiltrarPrioridade" class="form-grid">
+            <div class="form-group">
+              <label for="prioridadeFiltro"><i class="fas fa-exclamation-circle"></i> Prioridade:</label>
+              <select id="prioridadeFiltro" name="prioridadeFiltro">
+                <option value="Alta">Alta</option>
+                <option value="Média">Média</option>
+                <option value="Baixa">Baixa</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="categoriaFiltro"><i class="fas fa-tag"></i> Categoria:</label>
+              <input type="text" id="categoriaFiltro" name="categoriaFiltro" placeholder="Digite a categoria">
+            </div>
+            <div class="form-group" style="align-self: flex-end;">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-filter"></i> Filtrar
+              </button>
+            </div>
+          </form>
+        </div>
+        <div id="resFiltrarTarefas" class="resultado" style="display: none;"></div>
+      </section>
+    </div>
+
+    <div id="criar" class="tab-content">
+        <section>
+          <div class="section-header">
+            <h2><i class="fas fa-plus-circle"></i> Nova Tarefa</h2>
+          </div>
+          
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <h3 style="margin-bottom: 1rem; color: var(--primary-color);">
+              <i class="fas fa-tags"></i> Gerenciar Categorias
+            </h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="novaCategoria"><i class="fas fa-plus"></i> Nova Categoria:</label>
+                <input type="text" id="novaCategoria" placeholder="Ex: Estudos" />
+              </div>
+              <div class="form-group" style="align-self: flex-end;">
+                <button id="btnAddCategoria" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Adicionar
+                </button>
+              </div>
+            </div>
+            <div id="listaCategorias" style="margin-top: 1rem;">
+              <!-- Categorias serão carregadas aqui -->
+            </div>
+          </div>
+    
+          <!-- Criação de Tarefas -->
+          <div class="card">
+            <form id="formCriarTarefa">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="nomeTarefa"><i class="fas fa-heading"></i> Nome:</label>
+                  <input type="text" id="nomeTarefa" required placeholder="Ex: Reunião"/>
+                </div>
+                <div class="form-group">
+                  <label for="prioridadeTarefa"><i class="fas fa-exclamation-circle"></i> Prioridade:</label>
+                  <select id="prioridadeTarefa">
+                    <option value="Alta">Alta</option>
+                    <option value="Média" selected>Média</option>
+                    <option value="Baixa">Baixa</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="descricaoTarefa"><i class="fas fa-align-left"></i> Descrição:</label>
+                <input type="text" id="descricaoTarefa" required placeholder="Detalhes da tarefa"/>
+              </div>
+              
+              <div class="form-group">
+                <label for="categoriaTarefa"><i class="fas fa-tag"></i> Categoria:</label>
+                <select id="categoriaTarefa" required>
+                  <option value="">Selecione uma categoria</option>
+                  <!-- Categorias serão carregadas via JS -->
+                </select>
+              </div>
+              
+              <div style="text-align: right; margin-top: 1rem;">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Criar Tarefa
+                </button>
+              </div>
+            </form>
+          </div>
+          <div id="resCriarTarefa" class="resultado" style="display: none;"></div>
+        </section>
+      </div>
+    
+
+      <div id="gerenciar" class="tab-content">
+        <section>
+          <div class="section-header">
+            <h2><i class="fas fa-edit"></i> Gerenciar Tarefas</h2>
+          </div>
+          
+          <!-- Tarefas para Concluir -->
+          <div class="card">
+            <h3 style="margin-bottom: 1rem; color: var(--primary-color);">
+              <i class="fas fa-check-circle"></i> Concluir Tarefa
+            </h3>
+            <div id="selectConcluirTarefa" class="form-group">
+              <!-- As opções serão carregadas via JavaScript -->
+            </div>
+            <form id="formConcluirTarefa">
+              <div style="text-align: right;">
+                <button type="submit" class="btn btn-success">
+                  <i class="fas fa-check"></i> Marcar como Concluída
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Tarefas para Remover -->
+          <div class="card" style="margin-top: 1.5rem;">
+            <h3 style="margin-bottom: 1rem; color: var(--primary-color);">
+              <i class="fas fa-trash-alt"></i> Remover Tarefa
+            </h3>
+            <div id="selectRemoverTarefa" class="form-group">
+              <!-- As opções serão carregadas via JavaScript -->
+            </div>
+            <form id="formRemoverTarefa">
+              <div style="text-align: right;">
+                <button type="submit" class="btn btn-danger">
+                  <i class="fas fa-trash"></i> Remover Tarefa
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <div id="resGerenciarTarefas" class="resultado" style="display: none;"></div>
+        </section>
+      </div>
+  </main>
+
+  <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
