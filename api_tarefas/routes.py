@@ -1,10 +1,15 @@
-from . import bp
-from flask import jsonify, request
+from flask import jsonify, request, render_template
 from .models import TaskModel
 
 task_model = TaskModel()
 
-def register_routes(bp):
+def init_routes(bp):
+    # Rota raiz para evitar "Not Found"
+    @bp.route('/')
+    def index():
+        return render_template('main.html')  # Certifique-se de ter este template
+
+    # API de tarefas
     @bp.route('/tarefas', methods=['GET'])
     def list_tasks():
         tasks = task_model.get_all()

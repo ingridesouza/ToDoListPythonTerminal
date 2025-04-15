@@ -1,7 +1,7 @@
 from flask import Blueprint
-from . import routes
 
-bp = Blueprint('api', __name__, url_prefix='/api')
+bp = Blueprint('api_tarefas', __name__)
+
 
 def init_app(app):
     from . import routes 
