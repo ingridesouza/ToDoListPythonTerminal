@@ -12,10 +12,12 @@ class Database:
     def criar_conexao(self):
         return mysql.connector.connect(**self.config)
 
+
 class TaskModel:
     def __init__(self):
         self.db = Database()
 
+    
     def get_all(self):
         conn = self.db.criar_conexao()
         cursor = conn.cursor(dictionary=True)
@@ -26,6 +28,7 @@ class TaskModel:
         conn.close()
         return tarefas
 
+    
     def get_by_name(self, nome_tarefa):
         conn = self.db.criar_conexao()
         cursor = conn.cursor(dictionary=True)
@@ -36,6 +39,7 @@ class TaskModel:
         conn.close()
         return tarefa
 
+    
     def create(self, nome, descricao, prioridade, categoria):
         conn = self.db.criar_conexao()
         cursor = conn.cursor()
@@ -49,6 +53,7 @@ class TaskModel:
         cursor.close()
         conn.close()
 
+    
     def remove(self, nome_tarefa):
         conn = self.db.criar_conexao()
         cursor = conn.cursor()
@@ -60,6 +65,7 @@ class TaskModel:
         conn.close()
         return rows_affected > 0
 
+    
     def mark_completed(self, nome_tarefa):
         conn = self.db.criar_conexao()
         cursor = conn.cursor()
@@ -71,6 +77,7 @@ class TaskModel:
         conn.close()
         return rows_affected > 0
 
+    
     def get_by_priority(self, prioridade):
         conn = self.db.criar_conexao()
         cursor = conn.cursor(dictionary=True)
@@ -81,6 +88,7 @@ class TaskModel:
         conn.close()
         return tarefas
 
+    
     def get_by_category(self, categoria):
         conn = self.db.criar_conexao()
         cursor = conn.cursor(dictionary=True)
