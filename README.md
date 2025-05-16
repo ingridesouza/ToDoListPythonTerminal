@@ -4,7 +4,6 @@
 
 O ToDoList é uma aplicação web para gerenciamento de tarefas, desenvolvida com tecnologias front-end modernas (HTML5, CSS3 e JavaScript) com integração a uma API back-end em Flask.
 
-
 ## Funcionalidades Principais
 
 - Criação e organização de tarefas com campos detalhados (nome, descrição, prioridade, categoria)
