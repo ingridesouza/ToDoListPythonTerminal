@@ -12,7 +12,6 @@ CORS(app)
 # Inicializa as rotas passando o bp
 init_routes(bp)
 
-
 # Registra o blueprint
 app.register_blueprint(bp)
 
